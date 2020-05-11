@@ -1,109 +1,109 @@
--- Удаляем столбец created_at (метка создания файла) из таблицы profiles
+-- РЈРґР°Р»СЏРµРј СЃС‚РѕР»Р±РµС† created_at (РјРµС‚РєР° СЃРѕР·РґР°РЅРёСЏ С„Р°Р№Р»Р°) РёР· С‚Р°Р±Р»РёС†С‹ profiles
 ALTER TABLE profiles DROP COLUMN created_at;
 
--- Добавляем столбец photo_id в таблицу profiles (фото пользователя)
+-- Р”РѕР±Р°РІР»СЏРµРј СЃС‚РѕР»Р±РµС† photo_id РІ С‚Р°Р±Р»РёС†Сѓ profiles (С„РѕС‚Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ)
 ALTER TABLE profiles ADD photo_id INT UNSIGNED AFTER user_id;
 
--- Создаем таблицу со статусами user_statuses
+-- РЎРѕР·РґР°РµРј С‚Р°Р±Р»РёС†Сѓ СЃРѕ СЃС‚Р°С‚СѓСЃР°РјРё user_statuses
 CREATE TABLE user_statuses (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(150) NOT NULL UNIQUE
 );
 
--- Заполняем таблицу user_statuses
+-- Р—Р°РїРѕР»РЅСЏРµРј С‚Р°Р±Р»РёС†Сѓ user_statuses
 INSERT user_statuses
 VALUES
   (1, 'active'),
   (2, 'blocked'),
   (3, 'deleted');
  
--- Добавляем столбец status_id в таблицу users (связываем таблицу users с таблицей user_statuses) 
+-- Р”РѕР±Р°РІР»СЏРµРј СЃС‚РѕР»Р±РµС† status_id РІ С‚Р°Р±Р»РёС†Сѓ users (СЃРІСЏР·С‹РІР°РµРј С‚Р°Р±Р»РёС†Сѓ users СЃ С‚Р°Р±Р»РёС†РµР№ user_statuses) 
 ALTER TABLE users ADD status_id INT UNSIGNED NOT NULL DEFAULT 1 AFTER phone;
 
--- Добавляем столбец is_private в таблицу profiles (профиль пользователя открытый или закрытый)
+-- Р”РѕР±Р°РІР»СЏРµРј СЃС‚РѕР»Р±РµС† is_private РІ С‚Р°Р±Р»РёС†Сѓ profiles (РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РѕС‚РєСЂС‹С‚С‹Р№ РёР»Рё Р·Р°РєСЂС‹С‚С‹Р№)
 ALTER TABLE profiles ADD is_private BOOLEAN DEFAULT FALSE AFTER country;
 
--- Анализируем данные пользователей (таблица users)
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ (С‚Р°Р±Р»РёС†Р° users)
 SELECT * FROM users LIMIT 10;
 
--- Обновляем ссылки на статус (столбец status_id) в таблице users
+-- РћР±РЅРѕРІР»СЏРµРј СЃСЃС‹Р»РєРё РЅР° СЃС‚Р°С‚СѓСЃ (СЃС‚РѕР»Р±РµС† status_id) РІ С‚Р°Р±Р»РёС†Рµ users
 UPDATE users SET status_id = FLOOR(1 + RAND() * 3);
 
--- Обнавляем временные метки в таблице users
+-- РћР±РЅР°РІР»СЏРµРј РІСЂРµРјРµРЅРЅС‹Рµ РјРµС‚РєРё РІ С‚Р°Р±Р»РёС†Рµ users
 UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE created_at > updated_at;
 
--- Анализируем данные пользователей (таблица profiles)
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ (С‚Р°Р±Р»РёС†Р° profiles)
 SELECT * FROM profiles LIMIT 10;
 
--- Добавляем ссылки на фото пользователя
+-- Р”РѕР±Р°РІР»СЏРµРј СЃСЃС‹Р»РєРё РЅР° С„РѕС‚Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 UPDATE profiles SET photo_id = FLOOR(1 + RAND() * 150);
 
--- Обнавляем приватность
+-- РћР±РЅР°РІР»СЏРµРј РїСЂРёРІР°С‚РЅРѕСЃС‚СЊ
 UPDATE profiles SET is_private = TRUE WHERE user_id > FLOOR(1 + RAND() * 150);
 
--- Анализ данных таблицы messages (таблица сообщений)
+-- РђРЅР°Р»РёР· РґР°РЅРЅС‹С… С‚Р°Р±Р»РёС†С‹ messages (С‚Р°Р±Р»РёС†Р° СЃРѕРѕР±С‰РµРЅРёР№)
 SELECT * FROM messages LIMIT 10;
 
--- Все нормально, править ничего не надо
+-- Р’СЃРµ РЅРѕСЂРјР°Р»СЊРЅРѕ, РїСЂР°РІРёС‚СЊ РЅРёС‡РµРіРѕ РЅРµ РЅР°РґРѕ
 
--- Анализируем данные таблицы media (медиаконтент)
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ С‚Р°Р±Р»РёС†С‹ media (РјРµРґРёР°РєРѕРЅС‚РµРЅС‚)
 SELECT * FROM media LIMIT 10;
 
-/* Необходимо изменить данные таблицы media_types, обновить столбец filename, столбец size (размер файла не может быть равен "0"), 
-столбец metadata, столбец media_type_id, временные метки (столбцы created_at и updated_at)*/
+/* РќРµРѕР±С…РѕРґРёРјРѕ РёР·РјРµРЅРёС‚СЊ РґР°РЅРЅС‹Рµ С‚Р°Р±Р»РёС†С‹ media_types, РѕР±РЅРѕРІРёС‚СЊ СЃС‚РѕР»Р±РµС† filename, СЃС‚РѕР»Р±РµС† size (СЂР°Р·РјРµСЂ С„Р°Р№Р»Р° РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ СЂР°РІРµРЅ "0"), 
+СЃС‚РѕР»Р±РµС† metadata, СЃС‚РѕР»Р±РµС† media_type_id, РІСЂРµРјРµРЅРЅС‹Рµ РјРµС‚РєРё (СЃС‚РѕР»Р±С†С‹ created_at Рё updated_at)*/
 
--- Анализируем типы медиаконтента
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј С‚РёРїС‹ РјРµРґРёР°РєРѕРЅС‚РµРЅС‚Р°
 SELECT * FROM media_types;
 
--- Удаляем все типы и обнуляем счетчик
+-- РЈРґР°Р»СЏРµРј РІСЃРµ С‚РёРїС‹ Рё РѕР±РЅСѓР»СЏРµРј СЃС‡РµС‚С‡РёРє
 TRUNCATE media_types;
 
--- Добавляем нужные типы
+-- Р”РѕР±Р°РІР»СЏРµРј РЅСѓР¶РЅС‹Рµ С‚РёРїС‹
 INSERT INTO media_types (name) VALUES
   ('photo'),
   ('video'),
   ('audio');
  
- -- Обновляем данные для ссылки на тип
+ -- РћР±РЅРѕРІР»СЏРµРј РґР°РЅРЅС‹Рµ РґР»СЏ СЃСЃС‹Р»РєРё РЅР° С‚РёРї
 UPDATE media SET media_type_id = FLOOR(1 + RAND() * 3);
 
--- Меняем данные столбца filename
+-- РњРµРЅСЏРµРј РґР°РЅРЅС‹Рµ СЃС‚РѕР»Р±С†Р° filename
 
--- Создаём временную таблицу форматов медиафайлов
+-- РЎРѕР·РґР°С‘Рј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ С„РѕСЂРјР°С‚РѕРІ РјРµРґРёР°С„Р°Р№Р»РѕРІ
 CREATE TEMPORARY TABLE extensions (name VARCHAR(10));
 
--- Заполняем значениями
+-- Р—Р°РїРѕР»РЅСЏРµРј Р·РЅР°С‡РµРЅРёСЏРјРё
 INSERT INTO extensions VALUES ('jpeg'), ('avi'), ('mpeg'), ('png');
 
--- Смотрим что получилось
+-- РЎРјРѕС‚СЂРёРј С‡С‚Рѕ РїРѕР»СѓС‡РёР»РѕСЃСЊ
 SELECT * FROM extensions;
 
--- Обновляем ссылку на файл (столбец filename)
+-- РћР±РЅРѕРІР»СЏРµРј СЃСЃС‹Р»РєСѓ РЅР° С„Р°Р№Р» (СЃС‚РѕР»Р±РµС† filename)
 UPDATE media SET filename = CONCAT('https://dropbox/vk/',
   filename,
   '.',
   (SELECT name FROM extensions ORDER BY RAND() LIMIT 1)
 );
 
--- Обновляем размер файлов
+-- РћР±РЅРѕРІР»СЏРµРј СЂР°Р·РјРµСЂ С„Р°Р№Р»РѕРІ
 UPDATE media SET size = FLOOR(10000 + (RAND() * 1000000)) WHERE size < 1000;
 
--- Обновляем метаданные
+-- РћР±РЅРѕРІР»СЏРµРј РјРµС‚Р°РґР°РЅРЅС‹Рµ
 UPDATE media SET metadata = CONCAT('{"owner":"', 
   (SELECT CONCAT(first_name, ' ', last_name) FROM users WHERE id = user_id),
   '"}'
   );  
 
--- Возвращаем столбцу метеданных правильный тип
+-- Р’РѕР·РІСЂР°С‰Р°РµРј СЃС‚РѕР»Р±С†Сѓ РјРµС‚РµРґР°РЅРЅС‹С… РїСЂР°РІРёР»СЊРЅС‹Р№ С‚РёРї
 ALTER TABLE media MODIFY COLUMN metadata JSON;
 
--- Анализируем данные таблицы friendship (дружба)
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ С‚Р°Р±Р»РёС†С‹ friendship (РґСЂСѓР¶Р±Р°)
 SELECT * FROM friendship LIMIT 10;
 
--- Обнавляем временные метки в таблице friendship
+-- РћР±РЅР°РІР»СЏРµРј РІСЂРµРјРµРЅРЅС‹Рµ РјРµС‚РєРё РІ С‚Р°Р±Р»РёС†Рµ friendship
 UPDATE friendship SET confirmed_at = CURRENT_TIMESTAMP WHERE requested_at > confirmed_at;
 
--- Анализируем данные таблицы communities (сообщества)
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ С‚Р°Р±Р»РёС†С‹ communities (СЃРѕРѕР±С‰РµСЃС‚РІР°)
 SELECT * FROM communities;
 
--- Все нормально, править ничего не надо
+-- Р’СЃРµ РЅРѕСЂРјР°Р»СЊРЅРѕ, РїСЂР°РІРёС‚СЊ РЅРёС‡РµРіРѕ РЅРµ РЅР°РґРѕ
