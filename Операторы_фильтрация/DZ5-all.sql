@@ -19,7 +19,7 @@ SELECT value FROM storehouses_products ORDER BY CASE WHEN value = 0 then 1 else 
 
 -- 4. Из таблицы users необходимо извлечь пользователей, родившихся в августе и мае. Месяцы заданы в виде списка английских названий ('may', 'august').
 
-SELECT * FROM users WHERE DATE_FORMAT(birthday_at,'%M') in ('may', 'august');
+SELECT * FROM users WHERE DATE_FORMAT(birthday_at,'%M') IN ('may', 'august');
 
 /*5. Из таблицы catalogs извлекаются записи при помощи запроса. SELECT * FROM catalogs WHERE id IN (5, 1, 2); Отсортируйте записи в порядке, 
 заданном в списке IN.*/
