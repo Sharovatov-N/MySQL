@@ -10,13 +10,19 @@ SELECT birthday, user_id, (
  	ORDER BY birthday DESC 
  	LIMIT 10;
   
- SELECT profiles.user_id AS user_id, COUNT(likes.target_id) AS likes
- 	FROM profiles
- 		LEFT JOIN likes 
- 	ON (target_id IN (SELECT id FROM media WHERE media.user_id=profiles.user_id) AND target_type_id=3) OR 
-    (target_id IN (SELECT id FROM posts WHERE posts.user_id=profiles.user_id) AND target_type_id=4) OR 
-    (target_id IN (SELECT id FROM messages WHERE messages.from_user_id=profiles.user_id) AND target_type_id=1) OR
-    (target_id=profiles.user_id AND target_type_id=2) 
+SELECT profiles.user_id AS user_id, COUNT(likes.target_id) AS likes
+ 	FROM likes
+ 		LEFT JOIN media 
+ 	ON likes.target_id = media.id
+ 		LEFT JOIN posts 
+ 	ON likes.target_id = posts.id
+ 		LEFT JOIN messages 
+ 	ON likes.target_id = messages.id 
+ 		RIGHT JOIN profiles 
+ 	ON (likes.target_id=profiles.user_id AND likes.target_type_id=2) 
+ 		OR (media.user_id=profiles.user_id AND target_type_id=3)
+ 			OR (posts.user_id=profiles.user_id AND target_type_id=4)
+ 				OR (messages.from_user_id=profiles.user_id AND target_type_id=1)
  	GROUP BY user_id 
  	ORDER BY profiles.birthday DESC 
  	LIMIT 10;
@@ -33,13 +39,11 @@ SELECT
     
 SELECT p.gender, COUNT(l.user_id) AS total
 	FROM likes l
-		JOIN users 
-	ON l.user_id = users.id 
 		JOIN  profiles p
-	ON users.id = p.user_id
+	ON l.user_id = p.user_id
 	GROUP BY p.gender
 	ORDER BY total DESC
-    LIMIT 1;
+  LIMIT 1;
 	
 -- 3. Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети.
  
@@ -64,7 +68,3 @@ SELECT CONCAT(users.first_name, ' ', users.last_name) AS `user`,
 	GROUP BY `user`
 	ORDER BY overall_activity
 	LIMIT 10;
-	
-	
-	
-	
