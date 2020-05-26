@@ -1,5 +1,5 @@
 -- 1. Подсчитать общее количество лайков, которые получили 10 самых молодых пользователей.  
- 
+
 SELECT birthday, user_id, (
   SELECT COUNT(*) FROM likes WHERE 
     (target_id IN (SELECT id FROM media WHERE media.user_id=profiles.user_id) AND target_type_id=3) OR 
