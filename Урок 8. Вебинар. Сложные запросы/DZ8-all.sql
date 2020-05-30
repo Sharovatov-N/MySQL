@@ -48,15 +48,15 @@ SELECT p.gender, COUNT(l.user_id) AS total
 -- 3. Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети.
  
 SELECT 
-  CONCAT(first_name, ' ', last_name) AS user, 
+  CONCAT(first_name, ' ', last_name, ' - ', id) AS user, 
 	(SELECT COUNT(*) FROM likes WHERE likes.user_id = users.id) + 
 	(SELECT COUNT(*) FROM media WHERE media.user_id = users.id) + 
 	(SELECT COUNT(*) FROM messages WHERE messages.from_user_id = users.id) AS overall_activity 
 	  FROM users
 	  ORDER BY overall_activity
-	  LIMIT 10;
+	  ;
 	  
-SELECT CONCAT(users.first_name, ' ', users.last_name) AS `user`, 
+SELECT CONCAT(users.first_name, ' ', users.last_name, ' - ', users.id) AS `user`, 
 (COUNT(likes.user_id) + COUNT(media.user_id) + COUNT(messages.from_user_id)) AS overall_activity
 	FROM users
 		LEFT JOIN likes
@@ -68,3 +68,62 @@ SELECT CONCAT(users.first_name, ' ', users.last_name) AS `user`,
 	GROUP BY `user`
 	ORDER BY overall_activity
 	LIMIT 10;
+
+
+
+
+SELECT CONCAT(users.first_name, ' ', users.last_name) as user, 
+COUNT(IFNULL((likes.user_id), 0), IFNULL((media.user_id),0), IFNULL((messages.from_user_id),0)) as activity
+  FROM users
+  JOIN likes
+    ON likes.user_id = users.id
+  JOIN media
+    ON media.user_id = users.id
+  JOIN messages
+    ON messages.from_user_id = users.id
+  ORDER BY activity
+  LIMIT 10;
+
+
+
+SELECT CONCAT(users.first_name, ' ', users.last_name) AS `user`, 
+((likes.user_id)) AS overall_activity
+	FROM likes
+		LEFT JOIN users
+	ON likes.user_id = users.id
+	;
+	
+
+ + COUNT(media.user_id) + COUNT(messages.from_user_id)
+ 
+ 
+ 
+		LEFT JOIN media 
+	ON media.user_id = users.id
+		LEFT JOIN messages 
+	ON messages.from_user_id = users.id
+	
+
+messages.from_user_id	
+,COUNT(media.user_id),
+
+SELECT users.id,
+	COUNT(likes.user_id) AS w
+	FROM users
+		LEFT JOIN likes
+	ON likes.user_id = users.id
+	GROUP BY users.id 
+	ORDER BY w DESC
+	; 
+	
+
+		
+		LEFT JOIN media
+	ON media.user_id = users.id
+		LEFT JOIN messages 
+	ON messages.from_user_id = users.id 
+
+
+
+
+	
